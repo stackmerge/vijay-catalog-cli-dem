@@ -1,0 +1,29 @@
+name: Publish to Exchange using Catalog CLI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: Install Catalog-CLI
+      run: |
+        sudo apt-get update
+        npm install -g api-catalog-cli@latest
+        
+    - name: Publish to Exchange
+      env:
+        PLATFORM_ORGID: ${{ secrets.PLATFORM_ORGID}}
+        PLATFORM_CLIENTID: ${{ secrets.PLATFORM_CLIENTID}}
+        PLATFORM_CLIENTSECRET: ${{ secrets.PLATFORM_CLIENTSECRET}}
+      run: |
+        api-catalog publish-asset --organization="$PLATFORM_ORGID" --client_id="$PLATFORM_CLIENTID" --client_secret="$PLATFORM_CLIENTSECRET"
+   
